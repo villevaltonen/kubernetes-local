@@ -1,5 +1,0 @@
----
-  - hosts: all
-    become: true
-    tasks:
-      - include_tasks: ../tasks/kubernetes/hello.yaml
