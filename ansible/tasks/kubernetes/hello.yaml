@@ -1,0 +1,4 @@
+---
+
+- name: Write to a file
+  shell: echo "Hello from hello-task!" >> /tmp/hello
