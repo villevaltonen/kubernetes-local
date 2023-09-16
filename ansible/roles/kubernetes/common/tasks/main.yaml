@@ -20,10 +20,11 @@
     mode: '0644'
     state: directory
 
-- name: Update existing packages
-  apt:
-    name: "*"
-    state: latest
+# Disabled local usage due how long this takes.
+# - name: Update existing packages
+#   apt:
+#     name: "*"
+#     state: latest
 
 - name: Create containerd config file
   file:
