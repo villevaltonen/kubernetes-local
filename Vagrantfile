@@ -30,6 +30,7 @@ Vagrant.configure("2") do |config|
     (1..NODE_COUNT).each do |node_id|
         config.vm.define "k8s-node-#{node_id}" do |node|
             node.vm.box = IMAGE_NAME
+            node.vm.hostname = "k8s-node-#{node_id}"
             node.vm.box_check_update = "True"
             node.vm.network "private_network", ip: "192.168.60.10#{node_id}"
             node.vm.provider "virtualbox" do |node|
