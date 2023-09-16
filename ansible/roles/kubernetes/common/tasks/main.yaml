@@ -20,15 +20,15 @@
     mode: '0644'
     state: directory
 
-# - name: Update existing packages
-#   apt:
-#     name: "*"
-#     state: latest
+- name: Update existing packages
+  apt:
+    name: "*"
+    state: latest
 
 - name: Create containerd config file
   file:
     path: "/etc/modules-load.d/containerd.conf"
-    state: "touch"
+    state: touch
 
 - name: Add module conf for containerd
   blockinfile:

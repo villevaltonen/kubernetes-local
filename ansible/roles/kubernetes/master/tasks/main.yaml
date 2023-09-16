@@ -6,6 +6,7 @@
 
 - name: Initialise Kubernetes cluster
   shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=10.244.0.0/16
+  # This is a bit dirty, but better than nothing.
   when: kube_config.stat.exists == False
 
 - name: Create .kube directory
@@ -34,4 +35,4 @@
   register: join_command
 
 - name: Store join command to local machine
-  local_action: copy content={{ join_command }} dest=./join-command.sh
+  local_action: copy content={{ join_command.stdout }} dest=./join-command.sh
