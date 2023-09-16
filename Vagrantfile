@@ -1,7 +1,7 @@
 CODE_NAME = "jammy"
 IMAGE_NAME = "ubuntu/jammy64"
-WORKER_COUNT = 2
-KUBERNETES_VERSION = "1.28.1"
+NODE_COUNT = 2
+KUBERNETES_VERSION = "1.28.2-1.1"
 
 
 Vagrant.configure("2") do |config|
@@ -17,14 +17,15 @@ Vagrant.configure("2") do |config|
             master.cpus = 2
         end
         master.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "ansible/playbooks/kubernetes/master.yaml"
+            ansible.playbook = "ansible/playbooks/kubernetes/setup-master.yaml"
             ansible.extra_vars = {
-                node: "master"
+                node: "master",
+                kubernetes_version: "#{KUBERNETES_VERSION}"
             }
         end
     end
 
-    (1..WORKER_COUNT).each do |node_id|
+    (1..NODE_COUNT).each do |node_id|
         config.vm.define "k8s-node-#{node_id}" do |node|
             node.vm.box = IMAGE_NAME
             node.vm.box_check_update = "True"
@@ -34,9 +35,10 @@ Vagrant.configure("2") do |config|
                 node.cpus = 1
             end
             node.vm.provision "ansible_local" do |ansible|
-                ansible.playbook = "ansible/playbooks/kubernetes/node.yaml"
+                ansible.playbook = "ansible/playbooks/kubernetes/setup-node.yaml"
                 ansible.extra_vars = {
-                    node: "#{node_id}"
+                    node: "#{node_id}",
+                    kubernetes_version: "#{KUBERNETES_VERSION}"
                 }
             end
         end

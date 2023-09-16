@@ -1,4 +1,0 @@
----
-
-- name: Write id to a file
-  shell: echo "Hello from hello-task. I'm the node {{ node }}" >> /tmp/hello

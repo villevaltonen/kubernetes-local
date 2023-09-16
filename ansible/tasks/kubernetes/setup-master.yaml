@@ -1,0 +1,70 @@
+---
+- name: Update existing packages
+  apt:
+    name: "*"
+    state: latest
+
+- name: Install containerd and utils
+  apt:
+    pkg:
+      - apt-transport-https 
+      - ca-certificates
+      - containerd
+      - curl
+
+- name: Update hosts-file
+  path: /etc/hosts
+  blockinfile: |
+    192.168.60.100 k8s-master.localhost k8s-master
+    192.168.60.101 k8s-node-1.localhost k8s-node-1
+    192.168.60.102 k8s-node-2.localhost k8s-node-2
+
+- name: Config sysctl
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Add Kubernetes signing key
+  ansible.builtin.apt_key:
+    url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+    state: present
+
+- name: Add Kubernetes repository
+  ansible.builtin.apt_repository:
+    repo: deb https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /
+    state: present
+    filename: kubernetes.list
+
+- name: Install Kubernetes tools
+  apt:
+    update-cache: yes
+    state: present
+    pkg:
+      - kubeadm={{ kubernetes_version }}
+      - kubectl={{ kubernetes_version }}
+      - kubelet={{ kubernetes_version }}
+
+- name: Initialise Kubernetes cluster
+  shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=192.168.100.0/23
+
+- name: Create .kube directory
+  file:
+    path: /.kube/
+    owner: vagrant
+    group: vagrant
+    mode: '0755'
+    state: directory
+
+- name: Copy admin config to .kube
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dst: /home/vagrant/.kube/config
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+
+- name: Install Cilium
+  
