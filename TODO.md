@@ -1,2 +1,3 @@
 - Setup a nfs for persistent storage
 - Setup a load balancer
+- Try Cilium?
