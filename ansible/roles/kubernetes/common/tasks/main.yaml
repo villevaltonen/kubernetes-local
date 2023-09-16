@@ -1,0 +1,131 @@
+---
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    fstype: swap
+    state: absent
+  with_items:
+    - swap
+    - none
+
+- name: Disable swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Create directory for YAML-files
+  file:
+    path: "{{ kubernetes_yaml_location }}"
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+    state: directory
+
+- name: Update existing packages
+  apt:
+    name: "*"
+    state: latest
+
+- name: Create containerd config file
+  file:
+    path: "/etc/modules-load.d/containerd.conf"
+    state: "touch"
+
+- name: Add conf for containerd
+  blockinfile:
+    path: "/etc/modules-load.d/containerd.conf"
+    block: |
+      overlay
+      br_netfilter
+
+- name: Enable overlay kernel module
+  modprobe:
+    name: overlay
+    state: present
+
+- name: Enable br_netfilter kernel module
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Ensure br_netfilter is enabled.
+  modprobe:
+    name: br_netfilter
+    state: present
+
+- name: Ensure packets are filtered (IPv4)
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Ensure packets are filtered (IPv6)
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Enable forwarding IP-addresses
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Update hosts-file
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      192.168.60.100 k8s-master.localhost k8s-master
+      192.168.60.101 k8s-node-1.localhost k8s-node-1
+      192.168.60.102 k8s-node-2.localhost k8s-node-2
+
+- name: Install containerd and utils
+  apt:
+    pkg:
+      - apt-transport-https 
+      - ca-certificates
+      - containerd
+      - curl
+
+- name: Add Kubernetes signing key
+  ansible.builtin.apt_key:
+    url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+    state: present
+
+- name: Add Kubernetes repository
+  ansible.builtin.apt_repository:
+    repo: deb https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /
+    state: present
+    filename: kubernetes.list
+
+- name: Install Kubernetes tools
+  apt:
+    update-cache: yes
+    state: present
+    pkg:
+      - kubeadm={{ kubernetes_version }}
+      - kubectl={{ kubernetes_version }}
+      - kubelet={{ kubernetes_version }}
+
+- name: Configure node ip
+  lineinfile:
+    path: /etc/default/kubelet
+    line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+    create: yes
+
+- name: Restart kubelet
+  service:
+    name: kubelet
+    daemon_reload: yes
+    state: restarted
+
+- name: Restart containerd
+  service:
+    name: containerd
+    daemon_reload: yes
+    state: restarted

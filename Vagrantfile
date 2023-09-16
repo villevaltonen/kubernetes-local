@@ -2,6 +2,7 @@ CODE_NAME = "jammy"
 IMAGE_NAME = "ubuntu/jammy64"
 NODE_COUNT = 2
 KUBERNETES_VERSION = "1.28.2-1.1"
+KUBERNETES_YAML_LOCATION = "/home/vagrant/kubernetes-yaml/"
 
 
 Vagrant.configure("2") do |config|
@@ -13,14 +14,15 @@ Vagrant.configure("2") do |config|
         master.vm.network "private_network", ip: "192.168.60.100"
         master.vm.hostname = "k8s-master"
         master.vm.provider "virtualbox" do |master|
-            master.memory = 2048
+            master.memory = 6192
             master.cpus = 2
         end
         master.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "ansible/playbooks/kubernetes/setup-master.yaml"
             ansible.extra_vars = {
-                node: "master",
-                kubernetes_version: "#{KUBERNETES_VERSION}"
+                node_ip: "192.168.60.100",
+                kubernetes_version: "#{KUBERNETES_VERSION}",
+                kubernetes_yaml_location: "#{KUBERNETES_YAML_LOCATION}"
             }
         end
     end
@@ -37,8 +39,9 @@ Vagrant.configure("2") do |config|
             node.vm.provision "ansible_local" do |ansible|
                 ansible.playbook = "ansible/playbooks/kubernetes/setup-node.yaml"
                 ansible.extra_vars = {
-                    node: "#{node_id}",
-                    kubernetes_version: "#{KUBERNETES_VERSION}"
+                    node_ip: "192.168.60.10#{node_id}",
+                    kubernetes_version: "#{KUBERNETES_VERSION}",
+                    kubernetes_yaml_location: "#{KUBERNETES_YAML_LOCATION}"
                 }
             end
         end

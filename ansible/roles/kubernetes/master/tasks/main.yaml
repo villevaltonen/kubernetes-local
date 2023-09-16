@@ -1,0 +1,41 @@
+---
+- name: Check if kube config exists
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kube_config
+
+- name: Initialise Kubernetes cluster
+  shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=10.244.0.0/16
+  when: kube_config.stat.exists == False
+
+- name: Create .kube directory
+  file:
+    path: /home/vagrant/.kube/
+    owner: vagrant
+    group: vagrant
+    mode: '0755'
+    state: directory
+
+- name: Copy admin config to .kube
+  copy:
+    remote_src: true
+    src: /etc/kubernetes/admin.conf
+    dest: /home/vagrant/.kube/config
+    owner: vagrant
+    group: vagrant
+    mode: '0644'
+
+- name: Pause to give cluster some time to establish itself
+  ansible.builtin.pause:
+    minutes: 2
+
+- name: Install Flannel
+  become: false
+  command: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+
+- name: Generate join command
+  shell: kubeadm token create --print-join-command
+  register: join_command
+
+- name: Store join command to local machine
+  local_action: copy content={{ join_command }} dest=./join-command.sh
