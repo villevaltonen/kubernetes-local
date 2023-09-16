@@ -69,11 +69,6 @@
     name: br_netfilter
     state: present
 
-- name: Ensure br_netfilter is enabled
-  modprobe:
-    name: br_netfilter
-    state: present
-
 - name: Ensure packets are filtered (IPv4)
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
