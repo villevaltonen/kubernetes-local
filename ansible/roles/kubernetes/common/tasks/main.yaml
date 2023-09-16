@@ -97,6 +97,7 @@
   blockinfile:
     path: /etc/hosts
     block: |
+      192.168.60.99 k8s-nfs.localhost k8s-nfs
       192.168.60.100 k8s-master.localhost k8s-master
       192.168.60.101 k8s-node-1.localhost k8s-node-1
       192.168.60.102 k8s-node-2.localhost k8s-node-2

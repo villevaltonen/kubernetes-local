@@ -1,0 +1,44 @@
+---
+# Disabled local usage due how long this takes.
+# - name: Update existing packages
+#   apt:
+#     name: "*"
+#     state: latest
+
+- name: Install nfs-kernel-server
+  apt: 
+    name: nfs-kernel-server
+    state: present
+
+- name: Update hosts-file
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      192.168.60.99 k8s-nfs.localhost k8s-nfs
+      192.168.60.100 k8s-master.localhost k8s-master
+      192.168.60.101 k8s-node-1.localhost k8s-node-1
+      192.168.60.102 k8s-node-2.localhost k8s-node-2
+
+- name: Create shared NFS directory
+  file:
+    path: /var/nfs/kubernetes
+    mode: 0777
+    state: directory
+    owner: nobody
+    group: nogroup
+
+- name: Set exports
+  lineinfile:
+    path: /etc/exports
+    line: /var/nfs/kubernetes 192.168.60.0/24(rw,sync,no_subtree_check)
+    create: yes
+
+- name: Export all shared directories
+  command: exportfs -a
+
+- name: Restart nfs-server
+  service: 
+    name: nfs-kernel-server
+    daemon_reload: yes
+    state: restarted
+
