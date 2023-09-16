@@ -1,5 +1,12 @@
 ---
   - hosts: all
     become: true
-    tasks:
-      - include_tasks: ../../tasks/kubernetes/setup-node.yaml
+    roles:
+      - role: ../../roles/kubernetes/common
+        become: yes
+      - role: ../../roles/kubernetes/node
+        become: yes
+
+    handlers:
+      - name: Check container runtime status
+        service: name=containerd state=started
