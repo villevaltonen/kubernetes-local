@@ -20,22 +20,43 @@
     mode: '0644'
     state: directory
 
-- name: Update existing packages
-  apt:
-    name: "*"
-    state: latest
+# - name: Update existing packages
+#   apt:
+#     name: "*"
+#     state: latest
 
 - name: Create containerd config file
   file:
     path: "/etc/modules-load.d/containerd.conf"
     state: "touch"
 
-- name: Add conf for containerd
+- name: Add module conf for containerd
   blockinfile:
     path: "/etc/modules-load.d/containerd.conf"
     block: |
       overlay
       br_netfilter
+
+- name: Create directory for containerd
+  file:
+    path: "/etc/containerd/"
+    state: directory
+
+- name: Add configs for containerd
+  blockinfile:
+    path: "/etc/containerd/config.toml"
+    create: yes
+    block: |
+      version = 2
+      [plugins]
+        [plugins."io.containerd.grpc.v1.cri"]
+          [plugins."io.containerd.grpc.v1.cri".containerd]
+            discard_unpacked_layers = true
+            [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                runtime_type = "io.containerd.runc.v2"
+                [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+                  SystemdCgroup = true
 
 - name: Enable overlay kernel module
   modprobe:
@@ -47,7 +68,7 @@
     name: br_netfilter
     state: present
 
-- name: Ensure br_netfilter is enabled.
+- name: Ensure br_netfilter is enabled
   modprobe:
     name: br_netfilter
     state: present
