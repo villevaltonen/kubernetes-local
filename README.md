@@ -1,4 +1,4 @@
-## Kubernetes-local
+## kubernetes-local
 
 This repository contains files to bootstrap a local multi-node Kubernetes cluster with the help of Vagrant and Ansible. 
 
