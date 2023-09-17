@@ -1,6 +1,6 @@
 ## kubernetes-local
 
-This repository contains files to bootstrap a local multi-node Kubernetes cluster with the help of Vagrant and Ansible. 
+This repository contains files for creating a local multi-node Kubernetes cluster with the help of Vagrant and Ansible. 
 
 The cluster setup has four virtual machines: one control node, two worker nodes and one NFS-server. The NFS-server is used for dynamically provision storage for user workloads with a default StorageClass and PersistentVolumeClaims.
 
