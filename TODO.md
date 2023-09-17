@@ -1,3 +1,4 @@
-- Setup storage provisioner and storage class for NFS?
 - Setup a load balancer
 - Try Cilium?
+- Setup RBAC
+- Setup additional user accounts?
