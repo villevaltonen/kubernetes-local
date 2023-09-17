@@ -30,6 +30,15 @@
   become: false
   command: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 
+- name: Install metrics server
+  become: false
+  command: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+- name: Set kubelet-insecure-tls for metrics server
+  become: false
+  command: |
+    kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'
+
 - name: Generate join command
   shell: kubeadm token create --print-join-command
   register: join_command
