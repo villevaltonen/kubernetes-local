@@ -7,4 +7,4 @@ resources:
   - namespace.yaml
 
 patchesStrategicMerge:
-  - patch_nfs_details.yaml
+  - patch-nfs-details.yaml
