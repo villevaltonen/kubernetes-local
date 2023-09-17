@@ -1,0 +1,12 @@
+---
+- name: Copy yaml-files to remote
+  copy:
+    src: ../../../storage/
+    dest: "{{ kubernetes_yaml_location }}storage"
+    owner: vagrant
+    group: vagrant
+    mode: 0744
+
+- name: Configure NFS storage provisioner
+  command: kubectl apply -k {{ kubernetes_yaml_location }}storage
+  become: false

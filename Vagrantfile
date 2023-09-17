@@ -17,6 +17,7 @@ Vagrant.configure("2") do |config|
             nfs.memory = 512
             nfs.cpus = 1
         end
+
         nfs.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "ansible/playbooks/nfs/setup-nfs.yaml"
             ansible.extra_vars = {
@@ -35,11 +36,19 @@ Vagrant.configure("2") do |config|
             master.memory = 2048
             master.cpus = 2
         end
+
         master.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "ansible/playbooks/kubernetes/setup-master.yaml"
             ansible.extra_vars = {
                 node_ip: "192.168.60.100",
                 kubernetes_version: "#{KUBERNETES_VERSION}",
+                kubernetes_yaml_location: "#{KUBERNETES_YAML_LOCATION}"
+            }
+        end
+
+        master.vm.provision "ansible_local" do |ansible|
+            ansible.playbook = "ansible/playbooks/kubernetes/setup-nfs-provisioner.yaml"
+            ansible.extra_vars = {
                 kubernetes_yaml_location: "#{KUBERNETES_YAML_LOCATION}"
             }
         end
@@ -55,6 +64,7 @@ Vagrant.configure("2") do |config|
                 node.memory = 1024
                 node.cpus = 1
             end
+        
             node.vm.provision "ansible_local" do |ansible|
                 ansible.playbook = "ansible/playbooks/kubernetes/setup-node.yaml"
                 ansible.extra_vars = {

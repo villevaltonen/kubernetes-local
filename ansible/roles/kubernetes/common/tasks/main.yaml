@@ -17,7 +17,7 @@
     path: "{{ kubernetes_yaml_location }}"
     owner: vagrant
     group: vagrant
-    mode: '0644'
+    mode: '0744'
     state: directory
 
 # Disabled local usage due how long this takes.
@@ -109,6 +109,7 @@
       - ca-certificates
       - containerd
       - curl
+      - nfs-common
 
 - name: Add Kubernetes signing key
   ansible.builtin.apt_key:

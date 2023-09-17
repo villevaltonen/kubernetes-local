@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nfs-client-provisioner
+  name: nfs-client-provisioner
+spec:
+  template:
+    spec:
+      containers:
+        - name: nfs-client-provisioner
+          env:
+            - name: NFS_SERVER
+              value: "192.168.60.99"
+            - name: NFS_PATH
+              value: /var/nfs/kubernetes
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: "192.168.60.99"
+            path: /var/nfs/kubernetes
+            
