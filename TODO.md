@@ -1,3 +1,3 @@
-- Setup a nfs for persistent storage
+- Setup storage provisioner and storage class for NFS?
 - Setup a load balancer
 - Try Cilium?
