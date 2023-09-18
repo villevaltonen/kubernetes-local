@@ -32,3 +32,7 @@ The cluster setup has four virtual machines: one control node, two worker nodes 
 
 #### Delete everything
 `vagrant destroy -f`
+
+### Debug
+
+The repository contains a manifest for a debugger pod. It can be found under `debug/`
