@@ -12,6 +12,10 @@ The cluster setup has four virtual machines: one control node, two worker nodes 
 - Kubernetes v1.28.2
 - Ubuntu 22.04 (Jammy Jellyfish)
 
+### Othere Kubernetes components
+- Flannel (CNI)
+- metrics-server
+
 ### How to use
 
 #### Startup
