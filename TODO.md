@@ -1,4 +1,3 @@
 - Setup a load balancer
+- Setup additional user accounts and RBAC
 - Try Cilium?
-- Setup RBAC
-- Setup additional user accounts?
