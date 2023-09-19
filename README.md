@@ -13,7 +13,7 @@ The cluster setup has four virtual machines: one control node, two worker nodes 
 - Ubuntu 22.04 (Jammy Jellyfish)
 
 ### Othere Kubernetes components
-- Calico
+- Cilium 
 - metrics-server
 
 ### How to use
