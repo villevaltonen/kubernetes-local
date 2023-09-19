@@ -1,0 +1,6 @@
+---
+  - hosts: all
+    become: true
+    roles:
+      - role: ../../roles/lb
+        become: yes
