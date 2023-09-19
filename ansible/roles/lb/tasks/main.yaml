@@ -1,0 +1,27 @@
+---
+- name: Enable strict ARP mode # More info: https://metallb.universe.tf/installation/
+  shell: | 
+    kubectl get configmap kube-proxy -n kube-system -o yaml | \
+    sed -e "s/strictARP: false/strictARP: true/" | \
+    kubectl apply -f - -n kube-system
+  become_user: vagrant
+
+- name: Install MetalLB
+  command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.11/config/manifests/metallb-native.yaml
+  become_user: vagrant
+
+- name: Copy yaml-files to remote
+  copy:
+    src: ../../../lb/
+    dest: "{{ kubernetes_yaml_location }}lb"
+    owner: vagrant
+    group: vagrant
+    mode: 0744
+
+- name: Create secret
+  command: kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+  become_user: vagrant
+
+- name: Apply IPAddressPool and L2Advertisement
+  command: kubectl apply -k {{ kubernetes_yaml_location }}lb
+  become_user: vagrant
