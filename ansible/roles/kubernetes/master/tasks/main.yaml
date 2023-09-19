@@ -26,16 +26,6 @@
     group: vagrant
     mode: '0644'
 
-- name: Install Calico operator
-  become: false
-  shell: |
-    kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
-
-- name: Create Calico CRDs
-  become: false
-  shell: |
-    kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
-
 - name: Install metrics server
   become: false
   command: kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
@@ -49,6 +39,21 @@
   become: false
   command: |
     kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/hostNetwork", "value": true}]'
+
+- name: Install Cilium CLI
+  become: false
+  shell: |
+    CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+    GOOS=linux
+    GOARCH=amd64
+    curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
+    sha256sum --check cilium-${GOOS}-${GOARCH}.tar.gz.sha256sum
+    sudo tar -C /usr/local/bin -xzvf cilium-${GOOS}-${GOARCH}.tar.gz
+    rm cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
+
+- name: Install Cilium
+  become: false
+  command: cilium install
 
 - name: Generate join command
   shell: kubeadm token create --print-join-command
