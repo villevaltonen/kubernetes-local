@@ -5,7 +5,7 @@
   register: kube_config
 
 - name: Initialise Kubernetes cluster
-  shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=10.244.0.0/16
+  shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=192.168.0.0/16
   # This is a bit dirty, but better than nothing.
   when: kube_config.stat.exists == False
 
@@ -26,9 +26,15 @@
     group: vagrant
     mode: '0644'
 
-- name: Install Flannel
+- name: Install Calico operator
   become: false
-  command: kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+  shell: |
+    kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+
+- name: Create Calico CRDs
+  become: false
+  shell: |
+    kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
 
 - name: Install metrics server
   become: false
