@@ -131,6 +131,11 @@
       - kubectl={{ kubernetes_version }}
       - kubelet={{ kubernetes_version }}
 
+- name: Set kubectl alias
+  lineinfile:
+    path: /home/vagrant/.bashrc
+    line: alias k=kubectl
+
 - name: Configure node ip
   lineinfile:
     path: /etc/default/kubelet
