@@ -37,3 +37,9 @@ The cluster setup has four virtual machines: one control node, two worker nodes 
 ### Debug
 
 The repository contains a manifest for a debugger pod. It can be found under `debug/`
+
+### IP-address spaces
+- VirtualBox VMs: 192.168.60.0/25
+- Pod IP range: 192.168.61.0/24
+- Service IP range: 10.96.0.0/12
+- Cilium cluster pool range: 10.0.0.0/8
