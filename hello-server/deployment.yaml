@@ -1,14 +1,14 @@
-apiVersion: apps/v1                              
-kind: Deployment                    
-metadata:                                                                                               
-  labels:                         
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
     app: hello-server
   name: hello-server
-spec:               
+spec:
   replicas: 3
   selector:
     matchLabels:
-      app: hello
+      app: hello-server
   strategy:
     rollingUpdate:
       maxSurge: 25%
