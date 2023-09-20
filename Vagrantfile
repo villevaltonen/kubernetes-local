@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
         nfs.vm.box = IMAGE_NAME
         nfs.vm.box_check_update = "True"
         nfs.vm.hostname = "k8s-nfs"
-        nfs.vm.network "private_network", ip: "192.168.60.99", type: "dhcp"
+        nfs.vm.network "private_network", ip: "192.168.60.99"
         nfs.vm.provider "virtualbox" do |nfs|
             nfs.memory = 512
             nfs.cpus = 1
@@ -52,13 +52,6 @@ Vagrant.configure("2") do |config|
                 kubernetes_yaml_location: "#{KUBERNETES_YAML_LOCATION}"
             }
         end
-
-        master.vm.provision "ansible_local" do |ansible|
-            ansible.playbook = "ansible/playbooks/kubernetes/setup-lb.yaml"
-            ansible.extra_vars = {
-                kubernetes_yaml_location: "#{KUBERNETES_YAML_LOCATION}"
-            }
-        end
     end
 
     (1..NODE_COUNT).each do |node_id|
@@ -82,5 +75,5 @@ Vagrant.configure("2") do |config|
             end
         end
     end
-        
+
 end
