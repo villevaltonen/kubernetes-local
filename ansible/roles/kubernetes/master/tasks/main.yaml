@@ -5,7 +5,7 @@
   register: kube_config
 
 - name: Initialise Kubernetes cluster
-  shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=192.168.0.0/16
+  shell: kubeadm init --apiserver-advertise-address=192.168.60.100 --node-name=k8s-master --pod-network-cidr=192.168.61.0/24 --skip-phases=addon/kube-proxy
   # This is a bit dirty, but better than nothing.
   when: kube_config.stat.exists == False
 
@@ -40,20 +40,21 @@
   command: |
     kubectl patch deployment metrics-server -n kube-system --type='json' -p='[{"op": "add", "path": "/spec/template/spec/hostNetwork", "value": true}]'
 
-- name: Install Cilium CLI
+- name: Download Cilium CLI binaries
   become: false
-  shell: |
-    CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
-    GOOS=linux
-    GOARCH=amd64
-    curl -L --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
-    sha256sum --check cilium-${GOOS}-${GOARCH}.tar.gz.sha256sum
-    sudo tar -C /usr/local/bin -xzvf cilium-${GOOS}-${GOARCH}.tar.gz
-    rm cilium-${GOOS}-${GOARCH}.tar.gz{,.sha256sum}
+  get_url:
+    url: https://github.com/cilium/cilium-cli/releases/download/v0.15.8/cilium-linux-amd64.tar.gz
+    dest: /home/vagrant/cilium-linux-amd64.tar.gz
+    checksum: sha256:https://github.com/cilium/cilium-cli/releases/download/v0.15.8/cilium-linux-amd64.tar.gz.sha256sum
+
+- name: Extract Cilium CLI binaries
+  unarchive:
+    src: /home/vagrant/cilium-linux-amd64.tar.gz
+    dest: /usr/local/bin
 
 - name: Install Cilium
   become: false
-  command: cilium install
+  command: cilium install --namespace=kube-system --set kubeProxyReplacement=true  --set kubeProxyReplacement=true --set k8sServiceHost=192.168.60.100 --set k8sServicePort=6443
 
 - name: Generate join command
   shell: kubeadm token create --print-join-command
