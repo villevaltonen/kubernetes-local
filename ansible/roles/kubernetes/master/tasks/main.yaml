@@ -54,7 +54,11 @@
 
 - name: Install Cilium
   become: false
-  command: cilium install --namespace=kube-system --set kubeProxyReplacement=true  --set kubeProxyReplacement=true --set k8sServiceHost=192.168.60.100 --set k8sServicePort=6443
+  command: cilium install --namespace=kube-system --set kubeProxyReplacement=true  --set kubeProxyReplacement=true --set k8sServiceHost=192.168.60.100 --set k8sServicePort=6443 --set ipam.operator.clusterPoolIPv4PodCIDRList=10.0.0.0/22
+
+- name: Restart CoreDNS pods
+  become: false
+  command: kubectl rollout restart deployment coredns -n kube-system
 
 - name: Generate join command
   shell: kubeadm token create --print-join-command
@@ -62,3 +66,6 @@
 
 - name: Store join command to local machine
   local_action: copy content={{ join_command.stdout }} dest=./join-command.sh
+
+
+  

@@ -39,6 +39,6 @@ The repository contains a manifest for a debugger pod. It can be found under `de
 
 ### IP-address ranges
 - VirtualBox VMs: 192.168.60.0/25
-- Pod IP range: 192.168.61.0/24
-- Service IP range: 10.96.0.0/12
-- Cilium cluster pool range: 10.0.0.0/8
+- Pod IPs: 192.168.61.0/24
+- Cluster Service IPs: 10.96.0.0/12
+- Cilium cluster pool range: 10.0.0.0/22
