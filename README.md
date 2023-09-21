@@ -43,4 +43,5 @@ An example application can be deployed by using the manifests in `hello-server` 
 - VirtualBox VMs: 192.168.60.0/25
 - Pod IPs: 192.168.61.0/24
 - Cluster Service IPs: 10.96.0.0/12
-- Cilium cluster pool range: 10.0.0.0/22
+- Cilium cluster pool: 10.0.0.0/22
+- Cilium load balancer IP pool: 10.0.10.0/24
