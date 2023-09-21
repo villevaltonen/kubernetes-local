@@ -34,8 +34,10 @@ The cluster setup has four virtual machines: one control node, two worker nodes 
 `vagrant destroy -f`
 
 ### Debug
+The repository contains a manifest for a `dnsutils` pod as well as for an example `PersistentVolumeClaim`. These can be found under `debug` directory.
 
-The repository contains a manifest for a debugger pod. It can be found under `debug/`
+### Example application
+An example application can be deployed by using the manifests in `hello-server` directory.
 
 ### IP-address ranges
 - VirtualBox VMs: 192.168.60.0/25
