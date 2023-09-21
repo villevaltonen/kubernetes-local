@@ -1,20 +1,20 @@
 ## kubernetes-local
 
-This repository contains files for creating a local multi-node Kubernetes cluster with the help of Vagrant and Ansible. 
+This repository contains files for creating a local multi-node Kubernetes cluster with the help of [Vagrant](https://www.vagrantup.com) and [Ansible](https://www.ansible.com/). 
 
-The cluster setup has four virtual machines: one control node, two worker nodes and one NFS-server. The NFS-server is used for dynamically provision storage for user workloads with a default StorageClass and PersistentVolumeClaims.
+The cluster setup has four virtual machines: one control node, two worker nodes and one NFS-server. The NFS-server is used for dynamically provision storage for user workloads with a default StorageClass and PersistentVolumeClaims. The cluster has [Cilium](https://cilium.io) installed for networking.
 
 ### Requirements
-- Vagrant
-- VirtualBox
+- [Vagrant](https://www.vagrantup.com)
+- [VirtualBox](https://www.virtualbox.org)
 
 ### Stack
-- Kubernetes v1.28.2
-- Ubuntu 22.04 (Jammy Jellyfish)
+- [Kubernetes](https://kubernetes.io) v1.28.2
+- [Ubuntu](https://ubuntu.com) 22.04 (Jammy Jellyfish)
 
 ### Other Kubernetes components
-- Cilium 
-- metrics-server
+- [Cilium](https://cilium.io) 
+- [metrics-server](https://github.com/kubernetes-sigs/metrics-server)
 
 ### How to use
 
