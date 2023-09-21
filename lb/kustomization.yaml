@@ -1,5 +1,0 @@
-namespace: nfs-provisioner
-
-resources:
-  - ip-address-pool.yaml
-  - advertisement.yaml
