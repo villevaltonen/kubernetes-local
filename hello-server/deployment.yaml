@@ -23,3 +23,10 @@ spec:
       - image: gcr.io/google-samples/hello-app:1.0
         imagePullPolicy: IfNotPresent
         name: hello-app
+      securityContext:
+        allowPrivilegeEscalation: false
+        privileged: false
+        runAsNonRoot: false
+        capabilities:
+          drop:
+            - ALL
