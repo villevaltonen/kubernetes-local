@@ -2,7 +2,7 @@
 
 This repository contains files for creating a local multi-node Kubernetes cluster with the help of [Vagrant](https://www.vagrantup.com) and [Ansible](https://www.ansible.com/). 
 
-The cluster setup has four virtual machines: one control node, two worker nodes and one NFS-server. The NFS-server is used for dynamically provision storage for user workloads with a default StorageClass and PersistentVolumeClaims. The cluster has [Cilium](https://cilium.io) installed for networking.
+The cluster setup has four virtual machines: one control node, two worker nodes and one NFS-server. The NFS-server is used for dynamically provision storage for user workloads with a default StorageClass and PersistentVolumeClaims. The cluster has [Cilium](https://cilium.io) installed for networking and [metrics-server](https://github.com/kubernetes-sigs/metrics-server) for resource monitoring.
 
 ### Requirements
 - [Vagrant](https://www.vagrantup.com)
