@@ -3,3 +3,4 @@ namespace: default
 resources:
   - deployment.yaml
   - svc.yaml
+  - svc-lb.yaml
