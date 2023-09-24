@@ -45,3 +45,6 @@ An example application can be deployed by using the manifests in `hello-server` 
 - Cluster Service IPs: 10.96.0.0/12
 - Cilium cluster pool: 10.0.0.0/22
 - Cilium load balancer IP pool: 10.0.10.0/24
+
+### Disclaimer
+This repository contains a local Kubernetes setup, which was built for learning purposes. Since the scope had to be limited, it has some rough edges here and there.
