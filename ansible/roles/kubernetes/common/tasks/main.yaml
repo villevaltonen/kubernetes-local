@@ -142,29 +142,13 @@
     line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
     create: yes
 
-- name: Disable systemd-resolved
-  service:
-    name: systemd-resolved
-    enabled: false
-    state: stopped
-
-- name: Delete default /etc/resolve.conf
-  file:
-    path: /etc/resolv.conf
-    state: absent
-
-- name: Add a blank /etc/resolv.conf
-  file:
-    path: /etc/resolv.conf
-    state: touch
-
-- name: Configure nameservers for nodes
+- name: Configure nameservers systemd-resolved
   blockinfile:
-    path: /etc/resolv.conf
+    path: /etc/systemd/resolved.conf
     create: true
     block: |
       # Managed by Ansible
-      nameserver 8.8.8.8
+      DNS=8.8.8.8
 
 - name: Restart kubelet
   service:
