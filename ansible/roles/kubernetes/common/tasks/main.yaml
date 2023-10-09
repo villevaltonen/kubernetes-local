@@ -142,14 +142,6 @@
     line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
     create: yes
 
-- name: Configure nameservers systemd-resolved
-  blockinfile:
-    path: /etc/systemd/resolved.conf
-    create: true
-    block: |
-      # Managed by Ansible
-      DNS=8.8.8.8
-
 - name: Restart kubelet
   service:
     name: kubelet
